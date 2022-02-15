@@ -50,7 +50,6 @@ summary(new_freeny[, "freeny$price.index/freeny$income.level"])
 
 ```
 
-
 ### Good Job! You are done with the section!
 
 ## Section 2: Machine Learning: Regression Analysis
@@ -64,19 +63,70 @@ summary(new_freeny[, "freeny$price.index/freeny$income.level"])
 5. Plot the actual and predicted results for y variable.  
 
 
-```R
+```{r}
+library(ggplot2)
+
+l_regression <- lm(y ~ lag.quarterly.revenue, data = freeny)
+
+plt <- ggplot(data = freeny, aes(lag.quarterly.revenue, y)) + geom_point()
+reg_line <- geom_smooth(data = freeny, aes(lag.quarterly.revenue, y))
+plot(plt+reg_line)
+pred <- predict(l_regression, data.frame(lag.quarterly.revenue=c(seq(1:39))))
+
+```
+
+```{r}
+
+l_regression1 <- lm(y ~ income.level, data = freeny)
+
+plt1 <- ggplot(data = freeny, aes(income.level, y)) + geom_point()
+reg_line1 <- geom_smooth(data = freeny, aes(income.level, y))
+plot(plt1+reg_line1)
+pred1 <- predict(l_regression1, data.frame(income.level=c(seq(1:39))))
+
+y_val <- as.numeric(freeny$y)
+
+r_squared <- cor(y_val, pred)^2
+r_squared1 <- cor(y_val, pred1)^2
+
+r_squared; r_squared1
+
+
+
+
+ r
+```
+```{r}
+names(l_regression)
+```
+
+
+```{r}
+
+train_data <- freeny[1:20, ]
+test_data <- freeny[20:39, ]
+
+l_regression2 <- lm(y ~ income.level, data = train_data)
+
+plt2 <- ggplot(data = train_data, aes(income.level, y)) + geom_point()
+reg_line2 <- geom_smooth(data = train_data, aes(income.level, y))
+plot(plt2+reg_line2)
+pred2 <- predict(l_regression2, data.frame(income.level=test_data$income.level))
+
+summary(l_regression2)
+
+Residual_Variance <- (summary(l_regression2)$sigma)**2
+Residual_Variance
+library(gridExtra)
+
+p11 <- plt2+reg_line2
+p12 <- ggplot(data = test_data, aes(income.level, pred2)) + geom_point()
+
+grid.arrange(p11, p12, nrow = 1)
 
 ```
 
 
-```R
-
-```
-
-
-```R
-
-```
 
 ### Good Job! You are done with the section!
 
